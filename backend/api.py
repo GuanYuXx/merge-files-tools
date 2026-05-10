@@ -195,9 +195,8 @@ async def thumbnail(session_id: str, file_id: str):
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
         img = pages[0]
-        rotation = entry.get("rotation", 0)
-        if rotation:
-            img = img.rotate(-rotation, expand=True)
+        # No rotation here — rotation is applied client-side via CSS transform,
+        # so the cache stays valid regardless of how many times the user rotates.
         img.thumbnail((200, 200), Image.Resampling.LANCZOS)
         img.convert("RGB").save(thumb_path, "JPEG", quality=80)
 

@@ -90,7 +90,10 @@ dropZone.addEventListener('drop', e => {
   dropZone.classList.remove('dragover');
   uploadFiles(Array.from(e.dataTransfer.files));
 });
-dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('click', e => {
+  if (e.target.tagName === 'LABEL' || e.target.tagName === 'INPUT') return;
+  fileInput.click();
+});
 fileInput.addEventListener('change', () => {
   uploadFiles(Array.from(fileInput.files));
   fileInput.value = '';
@@ -152,11 +155,12 @@ function buildCard(f) {
   card.className = 'file-card';
   card.dataset.id = f.id;
 
-  // Thumbnail
+  // Thumbnail — rotation applied via CSS so cache never needs invalidation
   const thumb = document.createElement('img');
   thumb.className = 'card-thumb';
-  thumb.src = `/api/thumbnail/${sessionId}/${f.id}?t=${Date.now()}`;
+  thumb.src = `/api/thumbnail/${sessionId}/${f.id}`;
   thumb.alt = f.original_name;
+  thumb.style.transform = `rotate(${f.rotation || 0}deg)`;
   thumb.onerror = () => {
     const ph = document.createElement('div');
     ph.className = 'card-thumb-placeholder';
@@ -170,28 +174,34 @@ function buildCard(f) {
   const name = document.createElement('div');
   name.className = 'card-name';
   name.textContent = f.original_name;
-  const meta = document.createElement('div');
-  meta.className = 'card-meta';
-  meta.textContent = `${(f.size / 1024).toFixed(1)} KB` +
-    (f.rotation ? ` · 旋轉 ${f.rotation}°` : '');
-  info.append(name, meta);
+  const metaEl = document.createElement('div');
+  metaEl.className = 'card-meta';
+  const updateMeta = rot => {
+    metaEl.textContent = `${(f.size / 1024).toFixed(1)} KB` + (rot ? ` · 旋轉 ${rot}°` : '');
+  };
+  updateMeta(f.rotation || 0);
+  info.append(name, metaEl);
 
   // Actions
   const actions = document.createElement('div');
   actions.className = 'card-actions';
 
+  let currentRot = f.rotation || 0;
   const makeRotBtn = (deg, label) => {
     const b = document.createElement('button');
     b.textContent = label;
     b.title = `旋轉 ${deg}°`;
-    b.addEventListener('click', async () => {
+    b.addEventListener('click', () => {
+      // Instant CSS update — no round-trip wait
+      currentRot = (currentRot + deg + 360) % 360;
+      thumb.style.transform = `rotate(${currentRot}deg)`;
+      updateMeta(currentRot);
+      // Persist to server in background
       const fd = new FormData();
       fd.append('session_id', sessionId);
       fd.append('file_id', f.id);
       fd.append('degrees', deg);
-      const res = await fetch('/api/rotate', { method: 'POST', body: fd });
-      const data = await res.json();
-      renderCards(data.file_list);
+      fetch('/api/rotate', { method: 'POST', body: fd });
     });
     return b;
   };
@@ -209,7 +219,7 @@ function buildCard(f) {
     renderCards(data.file_list);
   });
 
-  actions.append(makeRotBtn(90, '↻90°'), makeRotBtn(180, '↻180°'), makeRotBtn(270, '↺90°'), delBtn);
+  actions.append(makeRotBtn(90, '↻90°'), makeRotBtn(270, '↺90°'), delBtn);
   card.append(thumb, info, actions);
   return card;
 }
