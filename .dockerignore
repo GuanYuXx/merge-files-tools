@@ -1,0 +1,15 @@
+.env
+.env.local
+.env.nas
+sessions/
+uploads/
+outputs/
+tmp/
+__pycache__/
+*.pyc
+.venv/
+.git/
+.gitignore
+*.log
+.vscode/
+.idea/

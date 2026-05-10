@@ -1,0 +1,200 @@
+/* ── Reset & base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --primary: #4f6ef7;
+  --primary-dark: #3b56d8;
+  --danger: #e05252;
+  --text: #1a1a2e;
+  --muted: #6b7280;
+  --border: #e2e8f0;
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Utility ──────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.error  { color: var(--danger); font-size: .875rem; margin-top: .5rem; }
+.link   { color: var(--primary); cursor: pointer; text-decoration: underline; }
+
+/* ── Auth overlay ─────────────────────────────────────────────── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: var(--surface);
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  min-width: 320px;
+  text-align: center;
+  display: flex; flex-direction: column; gap: .75rem;
+}
+.modal h2 { font-size: 1.25rem; }
+.modal input {
+  padding: .6rem .9rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+}
+.modal button {
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 6px;
+  padding: .65rem 1.2rem; font-size: 1rem;
+  cursor: pointer; width: 100%;
+}
+.modal button:hover { background: var(--primary-dark); }
+
+/* ── App shell ────────────────────────────────────────────────── */
+#app { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+header h1 { font-size: 1.5rem; font-weight: 700; }
+#session-badge { font-size: .75rem; color: var(--muted); }
+#session-badge code { font-size: .7rem; }
+
+/* ── Drop zone ────────────────────────────────────────────────── */
+#drop-zone {
+  border: 2px dashed var(--primary);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 2.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background .15s;
+}
+#drop-zone.dragover { background: #eef1ff; }
+.drop-inner svg {
+  width: 48px; height: 48px; fill: var(--primary);
+  margin-bottom: .75rem;
+}
+.drop-inner p { color: var(--muted); margin-bottom: .3rem; }
+.drop-inner .hint { font-size: .8rem; color: #9ca3af; }
+#file-input { display: none; }
+
+/* ── Card list ────────────────────────────────────────────────── */
+#card-area { margin-top: 1.25rem; }
+#card-list { display: flex; flex-direction: column; gap: .75rem; }
+
+.file-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 1rem;
+  padding: .75rem 1rem;
+  cursor: grab;
+  transition: box-shadow .15s;
+}
+.file-card:active { cursor: grabbing; }
+.file-card.sortable-ghost { opacity: .4; }
+
+.card-thumb {
+  width: 60px; height: 60px; object-fit: cover;
+  border-radius: 6px; border: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg);
+}
+.card-thumb-placeholder {
+  width: 60px; height: 60px;
+  border-radius: 6px; border: 1px solid var(--border);
+  background: var(--bg);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+
+.card-info { flex: 1; min-width: 0; }
+.card-name {
+  font-weight: 600; font-size: .9rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card-meta { font-size: .75rem; color: var(--muted); margin-top: .2rem; }
+
+.card-actions { display: flex; gap: .4rem; flex-shrink: 0; }
+.card-actions button {
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: .3rem .55rem;
+  cursor: pointer; font-size: .8rem; color: var(--text);
+  transition: background .1s;
+}
+.card-actions button:hover { background: var(--bg); }
+.card-actions .btn-delete { color: var(--danger); border-color: #fca5a5; }
+.card-actions .btn-delete:hover { background: #fff5f5; }
+
+/* ── Control bar ──────────────────────────────────────────────── */
+#control-bar {
+  display: flex; flex-wrap: wrap; align-items: flex-end;
+  gap: 1rem; margin-top: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+.ctrl-group { display: flex; flex-direction: column; gap: .3rem; }
+.ctrl-group label { font-size: .8rem; font-weight: 600; color: var(--muted); }
+.ctrl-group select,
+.ctrl-group input[type=number] {
+  padding: .45rem .7rem;
+  border: 1px solid var(--border);
+  border-radius: 6px; font-size: .9rem;
+  min-width: 140px;
+}
+
+button.primary {
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 6px;
+  padding: .55rem 1.5rem; font-size: 1rem;
+  cursor: pointer; align-self: flex-end;
+  transition: background .15s;
+}
+button.primary:hover:not(:disabled) { background: var(--primary-dark); }
+button.primary:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Progress ─────────────────────────────────────────────────── */
+#progress-area {
+  margin-top: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+.progress-bar {
+  height: 8px; background: var(--border);
+  border-radius: 99px; overflow: hidden;
+}
+#progress-fill {
+  height: 100%; background: var(--primary);
+  border-radius: 99px;
+  width: 0; transition: width .3s;
+}
+#progress-msg { margin-top: .6rem; font-size: .875rem; color: var(--muted); }
+
+/* ── Download ─────────────────────────────────────────────────── */
+#download-area { margin-top: 1.25rem; text-align: center; }
+.btn-download {
+  display: inline-block;
+  background: #22c55e; color: #fff;
+  border-radius: var(--radius);
+  padding: .75rem 2.5rem; font-size: 1rem; font-weight: 600;
+  text-decoration: none;
+  transition: background .15s;
+}
+.btn-download:hover { background: #16a34a; }

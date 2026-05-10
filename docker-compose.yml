@@ -1,0 +1,24 @@
+services:
+  app:
+    build: .
+    image: merge-files-tool
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      APP_PASSWORD:         ${APP_PASSWORD:?APP_PASSWORD is required}
+      PORT:                 8000
+      HOST:                 0.0.0.0
+      MAX_FILE_SIZE_MB:     ${MAX_FILE_SIZE_MB:-200}
+      MAX_TOTAL_SIZE_MB:    ${MAX_TOTAL_SIZE_MB:-1024}
+      SESSION_TTL_MINUTES:  ${SESSION_TTL_MINUTES:-60}
+      MAX_PARALLEL_OFFICE:  ${MAX_PARALLEL_OFFICE:-2}
+      ALLOWED_ORIGINS:      ${ALLOWED_ORIGINS:-}
+    volumes:
+      - ${SESSIONS_VOLUME:-./sessions}:/app/sessions
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/files?session_id=healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

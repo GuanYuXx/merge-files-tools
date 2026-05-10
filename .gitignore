@@ -1,0 +1,31 @@
+# ── Secrets ──────────────────────────────────────────────────────
+.env
+.env.local
+.env.nas
+*.local
+secrets/
+
+# ── Runtime data ─────────────────────────────────────────────────
+sessions/
+uploads/
+outputs/
+tmp/
+*.log
+
+# ── Docker local override ─────────────────────────────────────────
+docker-compose.override.yml
+
+# ── Python ───────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+
+# ── IDE / OS ──────────────────────────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

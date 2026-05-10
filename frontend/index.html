@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>檔案合併工具</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── Auth Modal ─────────────────────────────────────────────────── -->
+<div id="auth-overlay" class="overlay">
+  <div class="modal">
+    <h2>🔒 請輸入密碼</h2>
+    <input id="pw-input" type="password" placeholder="密碼" autocomplete="current-password" />
+    <button id="pw-btn">進入</button>
+    <p id="pw-error" class="error hidden">密碼錯誤，請再試一次</p>
+  </div>
+</div>
+
+<!-- ── Main App ───────────────────────────────────────────────────── -->
+<div id="app" class="hidden">
+  <header>
+    <h1>檔案合併工具</h1>
+    <span id="session-badge">Session: <code id="sid-display"></code></span>
+  </header>
+
+  <!-- Drop zone -->
+  <div id="drop-zone">
+    <div class="drop-inner">
+      <svg viewBox="0 0 24 24"><path d="M12 2L8 8h3v8h2V8h3L12 2zM4 18h16v2H4v-2z"/></svg>
+      <p>拖曳檔案到這裡，或<label for="file-input" class="link">點選上傳</label></p>
+      <p class="hint">支援：PNG / JPG / BMP / WebP / TIFF / GIF / PDF / DOCX / XLSX / PPTX / DOC / XLS / PPT</p>
+      <input id="file-input" type="file" multiple accept=".png,.jpg,.jpeg,.bmp,.webp,.tiff,.tif,.gif,.pdf,.docx,.xlsx,.pptx,.doc,.xls,.ppt" />
+    </div>
+  </div>
+
+  <!-- File card list -->
+  <div id="card-area" class="hidden">
+    <div id="card-list"></div>
+  </div>
+
+  <!-- Settings + action bar -->
+  <div id="control-bar">
+    <div class="ctrl-group">
+      <label>輸出格式</label>
+      <select id="sel-format">
+        <option value="pdf">PDF（合併）</option>
+        <option value="png">PNG（壓縮包）</option>
+        <option value="jpg">JPG（壓縮包）</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <label>尺寸模式</label>
+      <select id="sel-size">
+        <option value="max">最大值（預設）</option>
+        <option value="min">最小值</option>
+        <option value="manual">手動</option>
+        <option value="none">不調整</option>
+      </select>
+    </div>
+    <div class="ctrl-group" id="manual-px-group" style="display:none">
+      <label>目標最長邊 (px)</label>
+      <input id="inp-manual-px" type="number" min="1" max="20000" value="1920" />
+    </div>
+    <div class="ctrl-group">
+      <label>縮放演算法</label>
+      <select id="sel-algo">
+        <option value="lanczos">Lanczos（推薦）</option>
+        <option value="bicubic">Bicubic</option>
+        <option value="bilinear">Bilinear</option>
+        <option value="nearest">Nearest</option>
+      </select>
+    </div>
+    <button id="btn-convert" class="primary" disabled>轉換</button>
+  </div>
+
+  <!-- Progress -->
+  <div id="progress-area" class="hidden">
+    <div class="progress-bar"><div id="progress-fill"></div></div>
+    <p id="progress-msg">處理中…</p>
+  </div>
+
+  <!-- Download -->
+  <div id="download-area" class="hidden">
+    <a id="download-link" class="btn-download" download>⬇ 下載結果</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
