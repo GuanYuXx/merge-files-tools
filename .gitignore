@@ -1,9 +1,14 @@
 # ── Secrets ──────────────────────────────────────────────────────
 .env
-.env.local
-.env.nas
+.env.*
+!.env.example
 *.local
 secrets/
+
+# ── Editor backups (may contain secrets, e.g. .env~) ─────────────
+*~
+*.bak
+*.swp
 
 # ── Runtime data ─────────────────────────────────────────────────
 sessions/
